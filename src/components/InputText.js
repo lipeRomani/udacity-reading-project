@@ -14,7 +14,7 @@ const styles = {
     }
 }
 
-const InputText = ({hintText, labelText, value, name, id, onChange}) => {
+const InputText = ({hintText, labelText, value, name, id, onChange, multiline = false, rows = 1, error}) => {
     return (
         <TextField
             floatingLabelText={labelText}
@@ -27,6 +27,8 @@ const InputText = ({hintText, labelText, value, name, id, onChange}) => {
             name={name}
             id={id}
             onChange={onChange}
+            multiLine={multiline}
+            rows={rows}
             /> 
     );
 }
@@ -37,7 +39,9 @@ InputText.propTypes = {
     value        : PropTypes.string.isRequired,
     name         : PropTypes.string.isRequired,
     id           : PropTypes.string.isRequired,
-    onChange     : PropTypes.func.isRequired  
+    onChange     : PropTypes.func.isRequired,
+    multiline    : PropTypes.bool,
+    rows         : PropTypes.number 
 }
 
 export default InputText;
