@@ -8,7 +8,6 @@ import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 
 import TiHeartOutline from 'react-icons/lib/ti/heart-outline';
-import TiFolderOpen from 'react-icons/lib/ti/folder-open';
 import TiDocumentAdd from 'react-icons/lib/ti/document-add';
 import TiArrowLeftThick from 'react-icons/lib/ti/arrow-left-thick';
 
@@ -47,24 +46,18 @@ class HeaderMenu extends Component {
                     <Divider />
                     <MenuItem>
                         <NavLink exact to='/' style={navLinkInactiveStyle} activeStyle={navLinkActiveStyle} onClick={() => this.handleDrawerMenu()}>
-                        <TiHeartOutline /> reading trends
+                        <TiHeartOutline /> All Posts
                         </NavLink>
-                    </MenuItem>
-                    <Divider />
-                    <MenuItem>
-                        <NavLink exact to='/my/favorites' style={navLinkInactiveStyle} activeStyle={navLinkActiveStyle} onClick={() => this.handleDrawerMenu()}>
-                        <TiFolderOpen /> my Favorites
-                        </NavLink>  
                     </MenuItem>
                     <Divider />
                     <MenuItem>
                         <NavLink exact to='/new/reading' style={navLinkInactiveStyle} activeStyle={navLinkActiveStyle} onClick={() => this.handleDrawerMenu()}>
-                        <TiDocumentAdd /> add new reading
+                        <TiDocumentAdd /> Add New Post
                         </NavLink>
                     </MenuItem>
                     <Divider />
                     <MenuItem style={{color : 'grey'}} onClick={() => this.handleDrawerMenu()}>
-                        <TiArrowLeftThick style={{ color : 'grey'}} /> close menus
+                        <TiArrowLeftThick style={{ color : 'grey'}} /> Close Menu
                     </MenuItem>
                 </Drawer>
             </div>
