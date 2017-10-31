@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {resumeText} from '../helpers/StringHelper';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
+import dateFormat from 'date-format';
 
 import FaHandOUp from 'react-icons/lib/fa/hand-o-up';
 import FaHandODown from 'react-icons/lib/fa/hand-o-down';
@@ -15,7 +16,8 @@ const detailIcon = <FaEye />;
 const PostItem = (props) => {
 
     const {post, onShowDetail, onUpVote, onDownVote} = props;
-    const subtitleMessage = `Author: ${post.author} | Category: ${post.category} | Vote Score: ${post.voteScore}`
+    const postDate = new Date(post.timestamp);
+    const subtitleMessage = `Date: ${dateFormat('dd-MM-yyyy hhhmm', postDate)} | Author: ${post.author} | Category: ${post.category} | Vote Score: ${post.voteScore}`
 
     return (
         <Card style={{marginBottom : '10px'}} zDepth={1}>
