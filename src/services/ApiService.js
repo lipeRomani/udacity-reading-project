@@ -43,6 +43,17 @@ export const getAllPosts = () => {
     .then(result => result.json());
 }
 
+export const getOnePostById = (id) => {
+    const url = `${POSTS_URL}/${id}`;
+    return fetch(url, {
+        method: 'GET',
+        headers : {
+            ...apiHeaders
+        }
+    })
+    .then(result => result.json());
+}
+
 export const voteById = (postId, option) => {
     const voteUrl = `${POSTS_URL}/${postId}`;
     const vote = {
@@ -54,6 +65,41 @@ export const voteById = (postId, option) => {
             ...apiHeaders
         },
         body : JSON.stringify(vote)
+    })
+    .then(result => result.json());
+}
+
+export const getCommentsByPostId = (postId) => {
+    const url = `${POSTS_URL}/${postId}/comments`;
+    return fetch(url, {
+        method : 'GET',
+        headers : {
+            ...apiHeaders
+        }
+    })
+    .then(result => result.json())
+}
+
+export const updatePost = ({id, title, body}) => {
+    const url = `${POSTS_URL}/${id}`;
+    const data = {title, body};
+    return fetch(url, {
+        method : "PUT",
+        headers : {
+            ...apiHeaders
+        },
+        body : JSON.stringify(data)
+    })
+    .then(result => result.json())
+}
+
+export const deletePost = (postId) => {
+    const url = `${POSTS_URL}/${postId}`;
+    return fetch(url, {
+        method : 'DELETE',
+        headers : {
+            ...apiHeaders
+        }
     })
     .then(result => result.json());
 }

@@ -51,7 +51,7 @@ class HeaderMenu extends Component {
                     </MenuItem>
                     <Divider />
                     <MenuItem>
-                        <NavLink exact to='/new/reading' style={navLinkInactiveStyle} activeStyle={navLinkActiveStyle} onClick={() => this.handleDrawerMenu()}>
+                        <NavLink exact to='/new/post' style={navLinkInactiveStyle} activeStyle={navLinkActiveStyle} onClick={() => this.handleDrawerMenu()}>
                         <TiDocumentAdd /> Add New Post
                         </NavLink>
                     </MenuItem>

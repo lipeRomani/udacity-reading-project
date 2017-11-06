@@ -12,7 +12,8 @@ import {
     addCategory,
     addFilterByCategory,
     clearFilterByCategory,
-    changeSortBy
+    changeSortBy,
+    clearAlert
 } from '../actions';
 import {
     getAllPosts,
@@ -21,6 +22,8 @@ import {
     OPTION_UP_VOTE,
     OPTION_DOWN_VOTE
 } from '../services/ApiService';
+import isEmpty from 'is-empty';
+import AlertContainer from 'react-alert';
 
 class PostListContainer extends Component {
 
@@ -32,9 +35,8 @@ class PostListContainer extends Component {
     componentDidMount() {
         this._loadPosts();
         this._loadCategories();
+        this._showAlertIfExists();
     }
-    
-    onShowDetail = (postId) => alert('show all')
 
     onUpVote = (postId) => {
         voteById(postId, OPTION_UP_VOTE)
@@ -88,14 +90,28 @@ class PostListContainer extends Component {
             });
     }
 
+    _showAlertIfExists = () => {
+        const {alert, clearAlert} = this.props;
+        if (!isEmpty(alert.alert)) {
+            const {typeMessage, message, time} = alert.alert;
+            this.msg.show(alert.alert.message, {
+                time,
+                message,
+                type : typeMessage
+            });
+            clearAlert();
+        }
+    }
+
     render() {
-        const {posts, categories, filter} = this.props;
+        const {posts, categories, filter, alert} = this.props;
         const sortMode = getSortString(filter.sortBy);
         return (
            <Grid fluid style={{marginTop : '10px'}}>
                 <Row>
-                    <Col md={12}>
+                    <Col md={12} xs={12}>
                         <PostFilterBar selected={filter.sortBy} onChange={this.onChangeSort} onRefresh={this.onRefreshPosts}/>
+                        <AlertContainer ref={a => this.msg = a} {...alert.options} />
                     </Col>
                 </Row>
                 
@@ -112,7 +128,7 @@ class PostListContainer extends Component {
                             })
                             .sort(sortBy(sortMode))
                             .map((post => {
-                                return <PostItem key={post.id} post={post} onShowDetail={this.onShowDetail} onUpVote={this.onUpVote} onDownVote={this.onDownVote} />
+                                return <PostItem key={post.id} post={post} onUpVote={this.onUpVote} onDownVote={this.onDownVote} />
                             }))}
                     </Col>
 
@@ -126,11 +142,13 @@ class PostListContainer extends Component {
     }
 }
 
-const mapStateToProps = ({posts, categories, filter}) => {
+const mapStateToProps = ({posts, categories, filter, alert}) => {
+    const {list} = posts;
     return {
-        posts,
+        posts : list,
         categories,
-        filter
+        filter,
+        alert
     };
 }
 
@@ -140,7 +158,8 @@ const mapDispatchToProps = (dispatch) => {
         addCategory : (data) => dispatch(addCategory(data)),
         addFilterByCategory : (data) => dispatch(addFilterByCategory(data)),
         clearFilterByCategory : () => dispatch(clearFilterByCategory()),
-        changeSortBy : (data) => dispatch(changeSortBy(data))
+        changeSortBy : (data) => dispatch(changeSortBy(data)),
+        clearAlert : () => dispatch(clearAlert())
     };
 }
 

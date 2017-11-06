@@ -4,7 +4,7 @@ import {resumeText} from '../helpers/StringHelper';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import {BottomNavigation, BottomNavigationItem} from 'material-ui/BottomNavigation';
 import dateFormat from 'date-format';
-
+import {withRouter} from 'react-router-dom';
 import FaHandOUp from 'react-icons/lib/fa/hand-o-up';
 import FaHandODown from 'react-icons/lib/fa/hand-o-down';
 import FaEye from 'react-icons/lib/fa/eye';
@@ -15,9 +15,10 @@ const detailIcon = <FaEye />;
 
 const PostItem = (props) => {
 
-    const {post, onShowDetail, onUpVote, onDownVote} = props;
+    const {post, onUpVote, onDownVote, history} = props;
     const postDate = new Date(post.timestamp);
     const subtitleMessage = `Date: ${dateFormat('dd-MM-yyyy hhhmm', postDate)} | Author: ${post.author} | Category: ${post.category} | Vote Score: ${post.voteScore}`
+    const postDetailUrl = `/post/${post.id}`;
 
     return (
         <Card style={{marginBottom : '10px'}} zDepth={1}>
@@ -36,7 +37,7 @@ const PostItem = (props) => {
                     <BottomNavigationItem
                         label="See full post"
                         icon={detailIcon}
-                        onClick={() => {onShowDetail(post.id)} }
+                        onClick={() => history.push(postDetailUrl)}
                     />
                     <BottomNavigationItem
                         label="Up vote"
@@ -66,9 +67,8 @@ PostItem.propTypes = {
         deleted : PropTypes.bool.isRequired,
         commentCount : PropTypes.number.isRequired
     }).isRequired,
-    onShowDetail : PropTypes.func,
     onUpVote : PropTypes.func, 
     onDownVote : PropTypes.func
 }
 
-export default PostItem;
+export default withRouter(PostItem);

@@ -28,11 +28,12 @@ export const InputText = ({input, label, hintText, meta: { touched, error }, ...
 )
 
 
-export const InputSelect = ({ input, label, meta: { touched, error }, children }) => (
+export const InputSelect = ({ input, label, meta: { touched, error }, children, ...custom }) => (
   <SelectField
     floatingLabelText={label}
     errorText={touched && error}
     {...input}
+    {...custom}
     onChange={(event, index, value) => input.onChange(value)}
     children={children} 
     fullWidth={true} />
