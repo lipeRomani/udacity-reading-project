@@ -3,7 +3,8 @@ import {connect} from 'react-redux';
 import {
     addDetailedPost,
     addAlert,
-    removePost
+    removePost,
+    addComment
 } from '../actions';
 import {
     getOnePostById,
@@ -11,19 +12,13 @@ import {
     deletePost
 } from '../services/ApiService';
 import {Grid, Row, Col} from 'react-flexbox-grid';
-import Paper from 'material-ui/Paper'
 import PostBody from './PostBody';
 import {withRouter} from 'react-router-dom';
 import isEmpty from 'is-empty';
 import NotFound404 from './NotFound404';
-
-
-import List from 'material-ui/List/List';
-import ListItem from 'material-ui/List/ListItem';
-import Avatar from 'material-ui/Avatar';
-import Divider from 'material-ui/Divider';
 import FlatButton from 'material-ui/FlatButton';
 import FaPlusCircle from 'react-icons/lib/fa/plus-circle';
+import CommentItem from './CommentItem';
 
 class PostDetailContainer extends Component {
 
@@ -44,13 +39,14 @@ class PostDetailContainer extends Component {
                 this.props.addDetailedPost(post);
                 this.setState({loadPost : false})
             })
-            .catch(err => console.log(err, 'deu merrdaaaaaaaaaa'))
     }
 
     _loadComments = (postId) => {
         getCommentsByPostId(postId)
-            .then(result => {
-                //aquiiii
+            .then(comments => {
+                comments.forEach(comment => {
+                    this.props.addComment(comment, postId);
+                });
             })
     }
 
@@ -74,7 +70,7 @@ class PostDetailContainer extends Component {
     }
 
     render() {
-        const {post} = this.props;
+        const {post, comments} = this.props;
         return (
             <Grid fluid>
                 <Row>
@@ -92,33 +88,10 @@ class PostDetailContainer extends Component {
                                 secondary={true}
                                 icon={<FaPlusCircle />} />
                         </div>
-                        <Paper style={{marginTop : '0.8em'}} zDepth={1}>
-                            <List>
-                                <ListItem
-                                    disabled={true}
-                                    leftAvatar={<Avatar>A</Avatar>}>
-                                    Felipe Antunes
-                                </ListItem>
-                            </List>
-                            <Divider />
-                            <div style={{padding:'1.2em', fontSize:'0.9em'}}>
-                            asdasda
-                            </div>
-                        </Paper>
-
-                        <Paper style={{marginTop : '0.8em'}} zDepth={1}>
-                            <List>
-                                <ListItem
-                                    disabled={true}
-                                    leftAvatar={<Avatar>A</Avatar>}>
-                                    Felipe Antunes
-                                </ListItem>
-                            </List>
-                            <Divider />
-                            <div style={{padding:'1.2em', fontSize:'0.9em'}}>
-                            asdasda
-                            </div>
-                        </Paper>
+                        
+                        {comments.map(_comment => (
+                            <CommentItem key={_comment.id} comment={_comment} />
+                        ))}
 
                     </Col>
                 </Row>
@@ -127,10 +100,18 @@ class PostDetailContainer extends Component {
     }
 }
 
-const mapStateToProps = ({posts}) => {
+const mapStateToProps = ({posts, comments}) => {
     const {detail} = posts;
+    const {list} = comments;
+    
     return {
-        post : detail
+        post : detail,
+        comments : list[detail.id] ? Object
+            .keys(list[detail.id])
+            .reduce((reducer, key) => {
+                reducer.push(list[detail.id][key])
+                return reducer;
+            }, []) : []
     }
 }
 
@@ -138,7 +119,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         addDetailedPost : (data) => dispatch(addDetailedPost(data)),
         addAlert : (data) => dispatch(addAlert(data)),
-        removePost : (data) => dispatch(removePost(data))
+        removePost : (data) => dispatch(removePost(data)),
+        addComment : (comment, postId) => dispatch(addComment(comment, postId))
     }
 }
 
