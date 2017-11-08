@@ -20,6 +20,7 @@ import FlatButton from 'material-ui/FlatButton';
 import FaPlusCircle from 'react-icons/lib/fa/plus-circle';
 import CommentItem from './CommentItem';
 import Dialog from 'material-ui/Dialog';
+import CommentForm from './CommentForm';
 
 class PostDetailContainer extends Component {
 
@@ -80,12 +81,6 @@ class PostDetailContainer extends Component {
 
         const actions = [
             <FlatButton
-                label="ADD NEW COMMENT!"
-                primary={true}
-                keyboardFocused={false}
-                onClick={() => {}}
-            />,
-            <FlatButton
                 label="Cancel"
                 secondary={true}
                 keyboardFocused={false}
@@ -128,6 +123,7 @@ class PostDetailContainer extends Component {
                     onRequestClose={this.handleModalAddComment}
                     >
                     Write your comment:
+                    <CommentForm form='commentForm' />
                 </Dialog>
             </Grid>    
         )
