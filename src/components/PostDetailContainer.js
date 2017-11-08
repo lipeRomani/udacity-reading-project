@@ -19,12 +19,14 @@ import NotFound404 from './NotFound404';
 import FlatButton from 'material-ui/FlatButton';
 import FaPlusCircle from 'react-icons/lib/fa/plus-circle';
 import CommentItem from './CommentItem';
+import Dialog from 'material-ui/Dialog';
 
 class PostDetailContainer extends Component {
 
     state = {
         loadPost : true,
-        loadComments : true
+        loadComments : true,
+        isOpenModalAddComment : false
     }
 
     componentDidMount() {
@@ -69,8 +71,28 @@ class PostDetailContainer extends Component {
             })
     }
 
+    handleModalAddComment = () => {
+        this.setState({isOpenModalAddComment : !this.state.isOpenModalAddComment})
+    }
+
     render() {
         const {post, comments} = this.props;
+
+        const actions = [
+            <FlatButton
+                label="ADD NEW COMMENT!"
+                primary={true}
+                keyboardFocused={false}
+                onClick={() => {}}
+            />,
+            <FlatButton
+                label="Cancel"
+                secondary={true}
+                keyboardFocused={false}
+                onClick={this.handleModalAddComment}
+            />
+        ];
+
         return (
             <Grid fluid>
                 <Row>
@@ -86,7 +108,8 @@ class PostDetailContainer extends Component {
                             <FlatButton
                                 label="Add Comment"
                                 secondary={true}
-                                icon={<FaPlusCircle />} />
+                                icon={<FaPlusCircle />} 
+                                onClick={this.handleModalAddComment} />
                         </div>
                         
                         {comments.map(_comment => (
@@ -95,6 +118,17 @@ class PostDetailContainer extends Component {
 
                     </Col>
                 </Row>
+
+
+                <Dialog
+                    title="New Comment"
+                    actions={actions}
+                    modal={false}
+                    open={this.state.isOpenModalAddComment}
+                    onRequestClose={this.handleModalAddComment}
+                    >
+                    Write your comment:
+                </Dialog>
             </Grid>    
         )
     }

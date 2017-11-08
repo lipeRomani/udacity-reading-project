@@ -17,32 +17,34 @@ const CommentItem = ({comment}) => {
     const postDays = calculateCommentDaysHelper(timestamp);
 
     return (
-        <Paper style={{marginTop : '0.8em', position: 'relative'}} zDepth={0}>
-            <IconMenu
-                iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-                anchorOrigin={{horizontal: 'left', vertical: 'top'}}
-                targetOrigin={{horizontal: 'left', vertical: 'top'}}
-                style={{position : 'absolute',top : 0,right : 0, zIndex : 300}}
-                >
-                <MenuItem primaryText="Edit" onClick={() => {}} />
-                
-                <MenuItem primaryText="Delete" onClick={() => {}} style={{color : 'red'}}/>
-            </IconMenu>
-            <List>
-                <ListItem
-                    disabled={true}
-                    leftAvatar={<Avatar>A</Avatar>}>
-                    {author}
-                </ListItem>
-            </List>
-            <div style={{padding:'1.2em', fontSize:'0.9em'}}>
-                {body}
-            </div>
-            <p style={{padding:'1.2em', fontSize:'0.6em', color: "#d8d8d8"}}>
-                {postDays} | <span style={{color : 'purple'}}>Score :  {voteScore}</span>
-            </p>
-            <Divider />
-        </Paper>
+        <div>
+            <Paper style={{marginTop : '0.8em', position: 'relative'}} zDepth={0}>
+                <IconMenu
+                    iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+                    anchorOrigin={{horizontal: 'left', vertical: 'top'}}
+                    targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                    style={{position : 'absolute',top : 0,right : 0, zIndex : 300}}
+                    >
+                    <MenuItem primaryText="Edit" onClick={() => {}} />
+                    
+                    <MenuItem primaryText="Delete" onClick={() => {}} style={{color : 'red'}}/>
+                </IconMenu>
+                <List>
+                    <ListItem
+                        disabled={true}
+                        leftAvatar={<Avatar>A</Avatar>}>
+                        {author}
+                    </ListItem>
+                </List>
+                <div style={{padding:'1.2em', fontSize:'0.9em'}}>
+                    {body}
+                </div>
+                <p style={{padding:'1.2em', fontSize:'0.6em', color: "#d8d8d8"}}>
+                    {postDays} | <span style={{color : 'purple'}}>Score :  {voteScore}</span>
+                </p>
+                <Divider />
+            </Paper>
+        </div>
     );
 }
 
