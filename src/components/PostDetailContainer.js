@@ -4,12 +4,14 @@ import {
     addDetailedPost,
     addAlert,
     removePost,
-    addComment
+    addComment,
+    formReset
 } from '../actions';
 import {
     getOnePostById,
     getCommentsByPostId,
-    deletePost
+    deletePost,
+    createComment
 } from '../services/ApiService';
 import {Grid, Row, Col} from 'react-flexbox-grid';
 import PostBody from './PostBody';
@@ -21,6 +23,7 @@ import FaPlusCircle from 'react-icons/lib/fa/plus-circle';
 import CommentItem from './CommentItem';
 import Dialog from 'material-ui/Dialog';
 import CommentForm from './CommentForm';
+import {makeId} from '../helpers/IdHelper';
 
 class PostDetailContainer extends Component {
 
@@ -72,6 +75,22 @@ class PostDetailContainer extends Component {
             })
     }
 
+    onCommentSubmit = ({author, body}) => {
+        const {id} = this.props.match.params;
+        createComment({
+            id : makeId(),
+            timestampt: Date.now(),
+            body,
+            author,
+            parentId : id
+
+        })
+        .then(comment => {
+            this.props.formReset();
+            console.log('criadoooo', comment)
+        });
+    }
+
     handleModalAddComment = () => {
         this.setState({isOpenModalAddComment : !this.state.isOpenModalAddComment})
     }
@@ -114,7 +133,6 @@ class PostDetailContainer extends Component {
                     </Col>
                 </Row>
 
-
                 <Dialog
                     title="New Comment"
                     actions={actions}
@@ -123,7 +141,7 @@ class PostDetailContainer extends Component {
                     onRequestClose={this.handleModalAddComment}
                     >
                     Write your comment:
-                    <CommentForm form='commentForm' />
+                    <CommentForm form='commentForm' onSubmit={this.onCommentSubmit} />
                 </Dialog>
             </Grid>    
         )
@@ -150,7 +168,8 @@ const mapDispatchToProps = (dispatch) => {
         addDetailedPost : (data) => dispatch(addDetailedPost(data)),
         addAlert : (data) => dispatch(addAlert(data)),
         removePost : (data) => dispatch(removePost(data)),
-        addComment : (comment, postId) => dispatch(addComment(comment, postId))
+        addComment : (comment, postId) => dispatch(addComment(comment, postId)),
+        formReset : () => dispatch(formReset())
     }
 }
 

@@ -12,7 +12,8 @@ import {
     ADD_ALERT,
     CLEAR_ALERT,
     REMOVE_POST, 
-    ADD_COMMENT
+    ADD_COMMENT,
+    FORM_RESET
 } from '../actions';
 import {SORT_BY_VOTE_SCORE} from '../helpers/SortHelper'
 
@@ -184,6 +185,20 @@ const addPostFormReset = (state, action) => {
     }
 }
 
+const formReset = (state, action) => {
+    const {type} = action;
+    switch(type) {
+        case FORM_RESET:
+            return {
+                ...state,
+                values : {},
+                fields : {}
+            }
+        default:
+            return state;
+    }
+}
+
 export default combineReducers({
     posts,
     categories,
@@ -191,6 +206,7 @@ export default combineReducers({
     filter,
     comments,
     form : formReducer.plugin({
-        addPost : addPostFormReset
+        addPost : addPostFormReset,
+        commentForm : formReset
     })
 })

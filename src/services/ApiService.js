@@ -5,6 +5,7 @@ export const OPTION_DOWN_VOTE = 'downVote';
 
 const CATEGORIES_URL = 'http://localhost:3001/categories';
 const POSTS_URL = 'http://localhost:3001/posts';
+const COMMENTS_URL = 'http://localhost:3001/comments';
 const AUTH_KEY = "123456abcde";
 const apiHeaders = {
     Authorization : AUTH_KEY,
@@ -100,6 +101,24 @@ export const deletePost = (postId) => {
         headers : {
             ...apiHeaders
         }
+    })
+    .then(result => result.json());
+}
+
+export const createComment = ({id, timestamp, body, author, parentId}) => {
+    const url = COMMENTS_URL;
+    return fetch(url, {
+        method : 'POST',
+        headers : {
+            ...apiHeaders
+        },
+        body : JSON.stringify({
+            id,
+            timestamp,
+            body,
+            author,
+            parentId
+        })
     })
     .then(result => result.json());
 }

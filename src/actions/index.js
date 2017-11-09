@@ -11,6 +11,7 @@ export const EDIT_POST = 'EDIT_POST';
 export const ADD_ALERT = 'ADD_ALERT';
 export const CLEAR_ALERT = 'CLEAR_ALERT';
 export const REMOVE_POST = 'REMOVE_POST';
+export const FORM_RESET = 'FORM_RESET';
 
 export const resetPostForm = () => {
     return {
@@ -108,3 +109,7 @@ export const clearAlert = () => {
         type : CLEAR_ALERT
     }
 }
+
+export const formReset = () => ({
+    type : FORM_RESET
+});
