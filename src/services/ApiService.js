@@ -107,6 +107,9 @@ export const deletePost = (postId) => {
 
 export const createComment = ({id, timestamp, body, author, parentId}) => {
     const url = COMMENTS_URL;
+    if (!timestamp) {
+        timestamp = Date.now();
+    }
     return fetch(url, {
         method : 'POST',
         headers : {
@@ -119,6 +122,17 @@ export const createComment = ({id, timestamp, body, author, parentId}) => {
             author,
             parentId
         })
+    })
+    .then(result => result.json());
+}
+
+export const deleteComment = (id) => {
+    const url = `${COMMENTS_URL}/${id}`;
+    return fetch(url,{
+        method : "DELETE",
+        headers : {
+            ...apiHeaders
+        }
     })
     .then(result => result.json());
 }

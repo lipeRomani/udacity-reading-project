@@ -5,13 +5,15 @@ import {
     addAlert,
     removePost,
     addComment,
-    formReset
+    formReset,
+    removeComment
 } from '../actions';
 import {
     getOnePostById,
     getCommentsByPostId,
     deletePost,
-    createComment
+    createComment,
+    deleteComment
 } from '../services/ApiService';
 import {Grid, Row, Col} from 'react-flexbox-grid';
 import PostBody from './PostBody';
@@ -30,7 +32,8 @@ class PostDetailContainer extends Component {
     state = {
         loadPost : true,
         loadComments : true,
-        isOpenModalAddComment : false
+        isOpenModalAddComment : false,
+        isOpenEditModal : false
     }
 
     componentDidMount() {
@@ -87,12 +90,25 @@ class PostDetailContainer extends Component {
         })
         .then(comment => {
             this.props.formReset();
-            console.log('criadoooo', comment)
+            this._loadComments(id);
         });
+    }
+
+    onDeleteComment = (commentId) => {
+        const {id} = this.props.match.params;
+        deleteComment(commentId)
+            .then(() =>{
+                this.props.removeComment(commentId, id);
+                this._loadComments(id)
+            } )
     }
 
     handleModalAddComment = () => {
         this.setState({isOpenModalAddComment : !this.state.isOpenModalAddComment})
+    }
+
+    handleModalEditForm = () => {
+
     }
 
     render() {
@@ -106,7 +122,7 @@ class PostDetailContainer extends Component {
                 onClick={this.handleModalAddComment}
             />
         ];
-
+        
         return (
             <Grid fluid>
                 <Row>
@@ -126,18 +142,18 @@ class PostDetailContainer extends Component {
                                 onClick={this.handleModalAddComment} />
                         </div>
                         
-                        {comments.map(_comment => (
-                            <CommentItem key={_comment.id} comment={_comment} />
+                        {comments && comments.map(_comment => (
+                            <CommentItem key={_comment.id} comment={_comment} onDelete={this.onDeleteComment} />
                         ))}
 
                     </Col>
                 </Row>
 
                 <Dialog
-                    title="New Comment"
+                    title={this.state.isOpenModalAddComment ? "New Comment" : "Edit Comment"}
                     actions={actions}
                     modal={false}
-                    open={this.state.isOpenModalAddComment}
+                    open={this.state.isOpenModalAddComment || this.state.isOpenEditModal}
                     onRequestClose={this.handleModalAddComment}
                     >
                     Write your comment:
@@ -151,7 +167,6 @@ class PostDetailContainer extends Component {
 const mapStateToProps = ({posts, comments}) => {
     const {detail} = posts;
     const {list} = comments;
-    
     return {
         post : detail,
         comments : list[detail.id] ? Object
@@ -169,7 +184,8 @@ const mapDispatchToProps = (dispatch) => {
         addAlert : (data) => dispatch(addAlert(data)),
         removePost : (data) => dispatch(removePost(data)),
         addComment : (comment, postId) => dispatch(addComment(comment, postId)),
-        formReset : () => dispatch(formReset())
+        formReset : () => dispatch(formReset()),
+        removeComment : (commentId, postId) => dispatch(removeComment(commentId, postId))
     }
 }
 

@@ -12,6 +12,7 @@ export const ADD_ALERT = 'ADD_ALERT';
 export const CLEAR_ALERT = 'CLEAR_ALERT';
 export const REMOVE_POST = 'REMOVE_POST';
 export const FORM_RESET = 'FORM_RESET';
+export const REMOVE_COMMENT = 'REMOVE_COMMENT';
 
 export const resetPostForm = () => {
     return {
@@ -81,6 +82,14 @@ export const addComment = (comment, postId) => {
         type : ADD_COMMENT,
         comment,
         postId
+    }
+}
+
+export const removeComment = (id, postId) => {
+    return {
+        type : REMOVE_COMMENT,
+         id,
+         postId
     }
 }
 

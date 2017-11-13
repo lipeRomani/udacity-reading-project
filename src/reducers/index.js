@@ -13,7 +13,8 @@ import {
     CLEAR_ALERT,
     REMOVE_POST, 
     ADD_COMMENT,
-    FORM_RESET
+    FORM_RESET,
+    REMOVE_COMMENT
 } from '../actions';
 import {SORT_BY_VOTE_SCORE} from '../helpers/SortHelper'
 
@@ -154,7 +155,7 @@ const filter = (state = initFilterState, action) => {
 }
 
 const comments = (state = initialCommentState, action) => {
-    const {comment, postId} = action;
+    const {comment, postId, id} = action;
     switch(action.type) {
         case ADD_COMMENT : 
             return  {
@@ -167,6 +168,10 @@ const comments = (state = initialCommentState, action) => {
                     }
                 }
             }
+        case REMOVE_COMMENT: 
+            const newState = Object.assign({}, state);
+            delete newState['list'][postId][id];
+            return newState;
         default : 
             return state;
     }
