@@ -12,7 +12,7 @@ import MenuItem from 'material-ui/MenuItem';
 import IconButton from 'material-ui/IconButton';
 import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 
-const CommentItem = ({comment, onDelete}) => {
+const CommentItem = ({comment, onDelete, onEdit}) => {
     const {author, body, id, timestamp, voteScore} = comment;
     const postDays = calculateCommentDaysHelper(timestamp);
 
@@ -25,7 +25,7 @@ const CommentItem = ({comment, onDelete}) => {
                     targetOrigin={{horizontal: 'left', vertical: 'top'}}
                     style={{position : 'absolute',top : 0,right : 0, zIndex : 300}}
                     >
-                    <MenuItem primaryText="Edit" onClick={() => {}} />
+                    <MenuItem primaryText="Edit" onClick={() => onEdit(id)} />
                     
                     <MenuItem primaryText="Delete" onClick={() => onDelete(id)} style={{color : 'red'}}/>
                 </IconMenu>

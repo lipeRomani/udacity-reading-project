@@ -11,8 +11,10 @@ export const EDIT_POST = 'EDIT_POST';
 export const ADD_ALERT = 'ADD_ALERT';
 export const CLEAR_ALERT = 'CLEAR_ALERT';
 export const REMOVE_POST = 'REMOVE_POST';
-export const FORM_RESET = 'FORM_RESET';
+export const COMMENT_FORM_RESET = 'COMMENT_FORM_RESET';
 export const REMOVE_COMMENT = 'REMOVE_COMMENT';
+export const ADD_EDIT_COMMENT = 'ADD_EDIT_COMMENT';
+export const REMOVE_EDIT_COMMENT = 'REMOVE_EDIT_COMMENT';
 
 export const resetPostForm = () => {
     return {
@@ -93,6 +95,19 @@ export const removeComment = (id, postId) => {
     }
 }
 
+export const addEditComment = ({id, author, body}) => {
+    return {
+        type : ADD_EDIT_COMMENT,
+        id,
+        author,
+        body
+    }
+}
+
+export const removeEditComment = () => ({
+    type : REMOVE_EDIT_COMMENT
+})
+
 export const addEditPost = ({id, author, title, category, body}) => {
     return {
         type : EDIT_POST,
@@ -119,6 +134,6 @@ export const clearAlert = () => {
     }
 }
 
-export const formReset = () => ({
-    type : FORM_RESET
+export const commentFormReset = () => ({
+    type : COMMENT_FORM_RESET
 });

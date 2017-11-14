@@ -5,15 +5,18 @@ import {
     addAlert,
     removePost,
     addComment,
-    formReset,
-    removeComment
+    commentFormReset,
+    removeComment,
+    addEditComment,
+    removeEditComment
 } from '../actions';
 import {
     getOnePostById,
     getCommentsByPostId,
     deletePost,
     createComment,
-    deleteComment
+    deleteComment,
+    getOneCommentById
 } from '../services/ApiService';
 import {Grid, Row, Col} from 'react-flexbox-grid';
 import PostBody from './PostBody';
@@ -89,8 +92,11 @@ class PostDetailContainer extends Component {
 
         })
         .then(comment => {
-            this.props.formReset();
+            this.props.commentFormReset();
             this._loadComments(id);
+            this.setState({
+                isOpenModalAddComment : false
+            })
         });
     }
 
@@ -104,22 +110,43 @@ class PostDetailContainer extends Component {
     }
 
     handleModalAddComment = () => {
+        this.props.removeEditComment();
         this.setState({isOpenModalAddComment : !this.state.isOpenModalAddComment})
     }
 
-    handleModalEditForm = () => {
+    handleModalEditComment = () => {
+        this.setState({isOpenEditModal : !this.state.isOpenEditModal})
+    }
 
+    handleModalEditForm = (commentId) => {
+        getOneCommentById(commentId)
+            .then(comment => {
+                this.props.addEditComment(comment);
+                this.setState({
+                    isOpenEditModal : true,
+                    isOpenModalAddComment : false
+                })
+            })
     }
 
     render() {
         const {post, comments} = this.props;
 
-        const actions = [
+        const addModalActions = [
             <FlatButton
                 label="Cancel"
                 secondary={true}
                 keyboardFocused={false}
                 onClick={this.handleModalAddComment}
+            />
+        ];
+
+        const editModalActions = [
+            <FlatButton
+                label="Cancel"
+                secondary={true}
+                keyboardFocused={false}
+                onClick={this.handleModalEditComment}
             />
         ];
         
@@ -143,21 +170,32 @@ class PostDetailContainer extends Component {
                         </div>
                         
                         {comments && comments.map(_comment => (
-                            <CommentItem key={_comment.id} comment={_comment} onDelete={this.onDeleteComment} />
+                            <CommentItem key={_comment.id} comment={_comment} onDelete={this.onDeleteComment} onEdit={this.handleModalEditForm} />
                         ))}
 
                     </Col>
                 </Row>
 
                 <Dialog
-                    title={this.state.isOpenModalAddComment ? "New Comment" : "Edit Comment"}
-                    actions={actions}
+                    title="New Comment"
+                    actions={addModalActions}
                     modal={false}
-                    open={this.state.isOpenModalAddComment || this.state.isOpenEditModal}
+                    open={this.state.isOpenModalAddComment}
                     onRequestClose={this.handleModalAddComment}
                     >
                     Write your comment:
                     <CommentForm form='commentForm' onSubmit={this.onCommentSubmit} />
+                </Dialog>
+
+                <Dialog
+                    title="Edit Comment"
+                    actions={editModalActions}
+                    modal={false}
+                    open={this.state.isOpenEditModal}
+                    onRequestClose={this.handleModalEditComment}
+                    >
+                    Write your comment:
+                    <CommentForm form='commentEditForm' onSubmit={this.onCommentSubmit} />
                 </Dialog>
             </Grid>    
         )
@@ -184,8 +222,10 @@ const mapDispatchToProps = (dispatch) => {
         addAlert : (data) => dispatch(addAlert(data)),
         removePost : (data) => dispatch(removePost(data)),
         addComment : (comment, postId) => dispatch(addComment(comment, postId)),
-        formReset : () => dispatch(formReset()),
-        removeComment : (commentId, postId) => dispatch(removeComment(commentId, postId))
+        commentFormReset : () => dispatch(commentFormReset()),
+        removeComment : (commentId, postId) => dispatch(removeComment(commentId, postId)),
+        addEditComment : (comment) => dispatch(addEditComment(comment)),
+        removeEditComment : () => dispatch(removeEditComment())
     }
 }
 

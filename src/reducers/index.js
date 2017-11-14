@@ -13,8 +13,10 @@ import {
     CLEAR_ALERT,
     REMOVE_POST, 
     ADD_COMMENT,
-    FORM_RESET,
-    REMOVE_COMMENT
+    COMMENT_FORM_RESET,
+    REMOVE_COMMENT,
+    ADD_EDIT_COMMENT,
+    REMOVE_EDIT_COMMENT
 } from '../actions';
 import {SORT_BY_VOTE_SCORE} from '../helpers/SortHelper'
 
@@ -155,7 +157,7 @@ const filter = (state = initFilterState, action) => {
 }
 
 const comments = (state = initialCommentState, action) => {
-    const {comment, postId, id} = action;
+    const {comment, postId, id, body, author} = action;
     switch(action.type) {
         case ADD_COMMENT : 
             return  {
@@ -172,6 +174,20 @@ const comments = (state = initialCommentState, action) => {
             const newState = Object.assign({}, state);
             delete newState['list'][postId][id];
             return newState;
+        case ADD_EDIT_COMMENT:
+            return {
+                ...state,
+                edit : {
+                    id,
+                    author,
+                    body
+                }
+            }
+        case REMOVE_EDIT_COMMENT:
+            return {
+                ...state,
+                edit : {}
+            }
         default : 
             return state;
     }
@@ -190,10 +206,10 @@ const addPostFormReset = (state, action) => {
     }
 }
 
-const formReset = (state, action) => {
+const commentFormReset = (state, action) => {
     const {type} = action;
     switch(type) {
-        case FORM_RESET:
+        case COMMENT_FORM_RESET:
             return {
                 ...state,
                 values : {},
@@ -212,6 +228,6 @@ export default combineReducers({
     comments,
     form : formReducer.plugin({
         addPost : addPostFormReset,
-        commentForm : formReset
+        commentForm : commentFormReset
     })
 })

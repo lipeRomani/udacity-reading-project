@@ -81,6 +81,17 @@ export const getCommentsByPostId = (postId) => {
     .then(result => result.json())
 }
 
+export const getOneCommentById = (id) => {
+    const url = `${COMMENTS_URL}/${id}`;
+    return fetch(url, {
+        method  : "GET",
+        headers : {
+            ...apiHeaders
+        }
+    })
+    .then(result => result.json());
+}
+
 export const updatePost = ({id, title, body}) => {
     const url = `${POSTS_URL}/${id}`;
     const data = {title, body};

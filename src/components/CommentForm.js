@@ -3,10 +3,11 @@ import {InputText} from './Inputs';
 import {Field, reduxForm} from 'redux-form';
 import RaisedButton from 'material-ui/RaisedButton';
 import {formReset} from '../actions';
+import {connect} from 'react-redux';
 
 const validate = (values) => {
     const errors = {};
-    const requiredFields = ['title', 'body'];
+    const requiredFields = ['author', 'body'];
         requiredFields.forEach(reqField => {
             if (!values[reqField])
                 errors[reqField] = 'Field required!'; 
@@ -24,8 +25,24 @@ let CommentForm = ({handleSubmit, invalid, submitting, onSubmit}) => {
     )
 }
 
+const mapStateToProps = ({comments}) => {
+    const {edit} = comments;
+    return {
+        initialValues : edit
+    };
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {}
+}
+
 CommentForm = reduxForm({
     validate
 })(CommentForm);
+
+CommentForm = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CommentForm)
 
 export default CommentForm;
