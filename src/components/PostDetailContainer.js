@@ -16,7 +16,12 @@ import {
     deletePost,
     createComment,
     deleteComment,
-    getOneCommentById
+    getOneCommentById,
+    updateComment,
+    voteById,
+    OPTION_UP_VOTE,
+    OPTION_DOWN_VOTE,
+    voteComment
 } from '../services/ApiService';
 import {Grid, Row, Col} from 'react-flexbox-grid';
 import PostBody from './PostBody';
@@ -29,6 +34,7 @@ import CommentItem from './CommentItem';
 import Dialog from 'material-ui/Dialog';
 import CommentForm from './CommentForm';
 import {makeId} from '../helpers/IdHelper';
+import sortBy from 'sort-by';
 
 class PostDetailContainer extends Component {
 
@@ -100,6 +106,19 @@ class PostDetailContainer extends Component {
         });
     }
 
+    onCommentEditSubmit = ({id, author, body}) => {
+        const postId = this.props.match.params.id;
+        updateComment({id, body})
+            .then(result => {
+                this.props.removeEditComment();
+                this.props.commentFormReset();
+                this._loadComments(postId);
+                this.setState({
+                    isOpenEditModal : false
+                });
+            });
+    } 
+
     onDeleteComment = (commentId) => {
         const {id} = this.props.match.params;
         deleteComment(commentId)
@@ -125,7 +144,39 @@ class PostDetailContainer extends Component {
                 this.setState({
                     isOpenEditModal : true,
                     isOpenModalAddComment : false
-                })
+                });
+            })
+    }
+
+    onPostVoteUp = (postId) => {
+        voteById(postId, OPTION_UP_VOTE)
+            .then(post => {
+                this.props.addDetailedPost(post)
+            });
+    }
+
+    onPostVoteDown = (postId) => {
+        voteById(postId, OPTION_DOWN_VOTE)
+            .then(post => {
+                this.props.addDetailedPost(post)
+            });
+    }
+
+    onCommentVoteUp = (commentId) => {
+        const {id} = this.props.match.params;
+
+        voteComment(commentId, OPTION_UP_VOTE)
+            .then(result => {
+                this._loadComments(id)
+            })
+    }
+
+    onCommentVoteDown = (commentId) => {
+        const {id} = this.props.match.params;
+
+        voteComment(commentId, OPTION_DOWN_VOTE)
+            .then(result => {
+                this._loadComments(id)
             })
     }
 
@@ -156,7 +207,7 @@ class PostDetailContainer extends Component {
                     <Col md={12} xs={12}>
                     {(isEmpty(post) && !this.state.loadPost) && 
                         <NotFound404 message="The post you requested does not exist!" /> }
-                    {!isEmpty(post) && <PostBody post={post} onEdit={this.onEdit} onDelete={this.onDelete} />}
+                    {!isEmpty(post) && <PostBody post={post} onEdit={this.onEdit} onDelete={this.onDelete} onVoteUp={this.onPostVoteUp} onVoteDown={this.onPostVoteDown} />}
                     </Col>
                 </Row>
                 <Row>
@@ -170,7 +221,13 @@ class PostDetailContainer extends Component {
                         </div>
                         
                         {comments && comments.map(_comment => (
-                            <CommentItem key={_comment.id} comment={_comment} onDelete={this.onDeleteComment} onEdit={this.handleModalEditForm} />
+                            <CommentItem
+                                key={_comment.id}
+                                comment={_comment}
+                                onDelete={this.onDeleteComment}
+                                onEdit={this.handleModalEditForm}
+                                onVoteUp={() => this.onCommentVoteUp(_comment.id)} 
+                                onVoteDown={() => this.onCommentVoteDown(_comment.id)}/>
                         ))}
 
                     </Col>
@@ -195,7 +252,7 @@ class PostDetailContainer extends Component {
                     onRequestClose={this.handleModalEditComment}
                     >
                     Write your comment:
-                    <CommentForm form='commentEditForm' onSubmit={this.onCommentSubmit} />
+                    <CommentForm form='commentEditForm' onSubmit={this.onCommentEditSubmit} />
                 </Dialog>
             </Grid>    
         )
@@ -205,14 +262,17 @@ class PostDetailContainer extends Component {
 const mapStateToProps = ({posts, comments}) => {
     const {detail} = posts;
     const {list} = comments;
-    return {
-        post : detail,
-        comments : list[detail.id] ? Object
+    let commentsArray = list[detail.id] ? Object
             .keys(list[detail.id])
             .reduce((reducer, key) => {
                 reducer.push(list[detail.id][key])
                 return reducer;
-            }, []) : []
+            }, [])
+            .sort(sortBy('-voteScore')) : []
+            
+    return {
+        post : detail,
+        comments : commentsArray
     }
 }
 

@@ -2,8 +2,8 @@ import React from 'react';
 import {InputText} from './Inputs';
 import {Field, reduxForm} from 'redux-form';
 import RaisedButton from 'material-ui/RaisedButton';
-import {formReset} from '../actions';
 import {connect} from 'react-redux';
+import isEmpty from 'is-empty';
 
 const validate = (values) => {
     const errors = {};
@@ -15,25 +15,16 @@ const validate = (values) => {
     return errors;
 }
 
-let CommentForm = ({handleSubmit, invalid, submitting, onSubmit}) => {
+let CommentForm = ({handleSubmit, invalid, submitting, onSubmit, initialValues}) => {
+    const isEdit = !isEmpty(initialValues);
     return (
         <form onSubmit={handleSubmit(onSubmit)} >
-            <Field name="author" id="author" label='Author' component={InputText} />
+            { isEdit && <Field name='id' id='id' component='input' type='hidden' /> }
+            <Field name="author" id="author" label='Author' component={InputText} disabled={isEdit} />
             <Field name="body" id="body" label='Body' multiLine={true} rows={5} component={InputText} />
-            <RaisedButton type='submit' primary={true} label="Add" disabled={invalid || submitting} />
+            <RaisedButton type='submit' primary={true} label={isEdit ? "Save changes" : "Add"} disabled={invalid || submitting} />
         </form>
     )
-}
-
-const mapStateToProps = ({comments}) => {
-    const {edit} = comments;
-    return {
-        initialValues : edit
-    };
-}
-
-const mapDispatchToProps = (dispatch) => {
-    return {}
 }
 
 CommentForm = reduxForm({
@@ -41,8 +32,8 @@ CommentForm = reduxForm({
 })(CommentForm);
 
 CommentForm = connect(
-    mapStateToProps,
-    mapDispatchToProps
+    ({comments}) => ({initialValues : comments.edit}),
+    () => ({})
 )(CommentForm)
 
 export default CommentForm;

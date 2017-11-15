@@ -9,6 +9,7 @@ import dateFormat from 'date-format';
 import PropTypes from 'prop-types';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import VoteMenu from './VoteMenu';
 
 const style = {
     title : {
@@ -32,6 +33,10 @@ const style = {
         position : 'absolute',
         top : 0,
         right : 0
+    },
+    divider : {
+        marginTop : '1em',
+        marginBottom : '1em'
     }
 }
 
@@ -48,7 +53,7 @@ class PostBody extends Component{
     }
 
     render () {
-        const {post, onEdit, onDelete} = this.props;
+        const {post, onEdit, onDelete, onVoteDown, onVoteUp} = this.props;
         const {author, voteScore, timestamp, id} = post;
         const postDateTime = dateFormat('dd-MM-yyyy hhhmm', new Date(timestamp));
 
@@ -81,6 +86,8 @@ class PostBody extends Component{
                 <h1 style={style.title}>{post.title}</h1>
                 <p style={style.subTitle}>{`Author: ${author} | Vote score: ${voteScore} | Publish date: ${postDateTime}`}</p>
                 <p style={style.body}>{post.body}</p>
+                <Divider style={style.divider}/>
+                <VoteMenu onVoteUp={() => onVoteUp(id)} onVoteDown={() => onVoteDown(id)} />
 
                 <Dialog
                     title="Caution!"
@@ -107,7 +114,9 @@ PostBody.propTypes = {
         "commentCount": PropTypes.number
     }).isRequired,
     onEdit : PropTypes.func.isRequired,
-    onDelete : PropTypes.func.isRequired
+    onDelete : PropTypes.func.isRequired,
+    onVoteUp : PropTypes.func,
+    onVoteDown : PropTypes.func
 }
 
 export default PostBody;

@@ -20,7 +20,7 @@ export const getAllCategories = () => {
     .then(result => result.json());
 }
 
-export const addPost = (post) => {
+export const addPost = post => {
     post.timestamp = Date.now();
     post.id = makeId();
 
@@ -44,7 +44,7 @@ export const getAllPosts = () => {
     .then(result => result.json());
 }
 
-export const getOnePostById = (id) => {
+export const getOnePostById = id => {
     const url = `${POSTS_URL}/${id}`;
     return fetch(url, {
         method: 'GET',
@@ -70,7 +70,7 @@ export const voteById = (postId, option) => {
     .then(result => result.json());
 }
 
-export const getCommentsByPostId = (postId) => {
+export const getCommentsByPostId = postId => {
     const url = `${POSTS_URL}/${postId}/comments`;
     return fetch(url, {
         method : 'GET',
@@ -81,7 +81,7 @@ export const getCommentsByPostId = (postId) => {
     .then(result => result.json())
 }
 
-export const getOneCommentById = (id) => {
+export const getOneCommentById = id => {
     const url = `${COMMENTS_URL}/${id}`;
     return fetch(url, {
         method  : "GET",
@@ -105,7 +105,7 @@ export const updatePost = ({id, title, body}) => {
     .then(result => result.json())
 }
 
-export const deletePost = (postId) => {
+export const deletePost = postId => {
     const url = `${POSTS_URL}/${postId}`;
     return fetch(url, {
         method : 'DELETE',
@@ -137,13 +137,40 @@ export const createComment = ({id, timestamp, body, author, parentId}) => {
     .then(result => result.json());
 }
 
-export const deleteComment = (id) => {
+export const deleteComment = id => {
     const url = `${COMMENTS_URL}/${id}`;
     return fetch(url,{
         method : "DELETE",
         headers : {
             ...apiHeaders
         }
+    })
+    .then(result => result.json());
+}
+
+export const updateComment = ({id, body}) => {
+    const url = `${COMMENTS_URL}/${id}`;
+    return fetch(url, {
+        method : 'PUT',
+        headers : {
+            ...apiHeaders
+        },
+        body : JSON.stringify({
+            timestamp : Date.now(),
+            body
+        })
+    })
+    .then(result => result.json())
+}
+
+export const voteComment = (id, option) => {
+    const url = `${COMMENTS_URL}/${id}`;
+    return fetch(url, {
+        method : "POST",
+        headers : {
+            ...apiHeaders
+        },
+        body : JSON.stringify({option})
     })
     .then(result => result.json());
 }
