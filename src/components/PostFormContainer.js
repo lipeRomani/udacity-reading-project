@@ -45,6 +45,10 @@ class PostFormContainer extends Component {
             });
     }
 
+    componentWillReceiveProps() {
+        this._loadValuesIfEditForm();
+    }
+
     onSubmit = (values) => {
         const {isEdit} = this.props;
         if (!isEdit) {
@@ -138,6 +142,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mapStateToProps = ({categories, posts, form}) => {
+    console.log(posts.edit)
     return {
         initialValues : posts.edit,
         categories

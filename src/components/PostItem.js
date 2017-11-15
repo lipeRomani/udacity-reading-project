@@ -17,7 +17,7 @@ const PostItem = (props) => {
 
     const {post, onUpVote, onDownVote, history} = props;
     const postDate = new Date(post.timestamp);
-    const subtitleMessage = `Date: ${dateFormat('dd-MM-yyyy hhhmm', postDate)} | Author: ${post.author} | Category: ${post.category} | Vote Score: ${post.voteScore}`
+    const subtitleMessage = `Date: ${dateFormat('dd-MM-yyyy hhhmm', postDate)} | Author: ${post.author} | Category: ${post.category} | Vote Score: ${post.voteScore} | Comments: ${post.commentCount}`
     const postDetailUrl = `/post/${post.id}`;
 
     return (

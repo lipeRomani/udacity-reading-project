@@ -84,7 +84,7 @@ class PostBody extends Component{
                 </IconMenu>
 
                 <h1 style={style.title}>{post.title}</h1>
-                <p style={style.subTitle}>{`Author: ${author} | Vote score: ${voteScore} | Publish date: ${postDateTime}`}</p>
+                <p style={style.subTitle}>{`Author: ${author} | Vote score: ${voteScore} | Publish date: ${postDateTime} | Comments: ${post.commentCount}`}</p>
                 <p style={style.body}>{post.body}</p>
                 <Divider style={style.divider}/>
                 <VoteMenu onVoteUp={() => onVoteUp(id)} onVoteDown={() => onVoteDown(id)} />
