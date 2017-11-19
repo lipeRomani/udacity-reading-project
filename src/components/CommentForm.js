@@ -28,7 +28,8 @@ let CommentForm = ({handleSubmit, invalid, submitting, onSubmit, initialValues})
 }
 
 CommentForm = reduxForm({
-    validate
+    validate,
+    enableReinitialize: true
 })(CommentForm);
 
 CommentForm = connect(

@@ -15,6 +15,7 @@ export const COMMENT_FORM_RESET = 'COMMENT_FORM_RESET';
 export const REMOVE_COMMENT = 'REMOVE_COMMENT';
 export const ADD_EDIT_COMMENT = 'ADD_EDIT_COMMENT';
 export const REMOVE_EDIT_COMMENT = 'REMOVE_EDIT_COMMENT';
+export const REMOVE_EDIT_POST = 'REMOVE_EDIT_POST';
 
 export const resetPostForm = () => {
     return {
@@ -41,6 +42,12 @@ export const removePost = (id) => {
     return {
         type : REMOVE_POST,
         id
+    }
+}
+
+export const removeEditPost = () => {
+    return {
+        type : REMOVE_EDIT_POST
     }
 }
 

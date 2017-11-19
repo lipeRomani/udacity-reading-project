@@ -7,29 +7,13 @@ import {
     updatePost
 } from '../services/ApiService';
 import Snackbar from 'material-ui/Snackbar';
-import {resetPostForm, addEditPost} from '../actions';
-import {Field, reduxForm} from 'redux-form';
-import {InputText, InputSelect} from './Inputs'
-import MenuItem from 'material-ui/MenuItem';
-import RaisedButton from 'material-ui/RaisedButton';
+import {resetPostForm, addEditPost, addCategory, removeEditPost} from '../actions';
 import {connect} from 'react-redux';
-import {withRouter} from 'react-router-dom';
-
-const validate = values => {
-    const errors = {};
-    const requiredFields = ['author', 'title', 'body', 'categorie'];
-    requiredFields.forEach(field => {
-        if (!values[field]) {
-            errors[field] = 'Required'
-        }
-    })
-    return errors;
-}
+import PostForm from './PostForm';
 
 class PostFormContainer extends Component {
 
     state = {
-        categories : [],
         snackMessage : "",
         snackBarOpen : false,
         autoHideDuration : 3000,
@@ -38,24 +22,25 @@ class PostFormContainer extends Component {
 
     componentDidMount() {
         this._loadValuesIfEditForm();
+        this._loadCategories()
+    }
+
+    onCreatePost = (values) => {
+        this._createPost(values);
+    }
+
+    onEditPost = (values) => {
+        this._updatePost(values);
+    }
+
+    _loadCategories = () => {
         getAllCategories()
             .then(result => result.categories)
             .then(categories => {
-                this.setState({categories})
+                categories.forEach(category => {
+                    this.props.addCategory(category);
+                });
             });
-    }
-
-    componentWillReceiveProps() {
-        this._loadValuesIfEditForm();
-    }
-
-    onSubmit = (values) => {
-        const {isEdit} = this.props;
-        if (!isEdit) {
-            this._createPost(values);
-        } else {
-            this._updatePost(values);
-        }
     }
 
     _createPost = (values) => {
@@ -88,45 +73,29 @@ class PostFormContainer extends Component {
     }
 
     _loadValuesIfEditForm = () => {
-        const {isEdit} = this.props;
-        if (isEdit) {
-            const {id} = this.props.match.params;
+        const {id} = this.props;
+        if (id) {
             getOnePostById(id)
                 .then(post => this.props.addEditPost(post));
         } else {
+            this.props.removeEditPost();
             this.props.resetForm();
         }
     }
 
     render() {
-        const {handleSubmit, invalid, submitting, isEdit, history} = this.props;
-        const {id} = this.props.match.params;
-        let btnLabel = isEdit ? 'Save Changes!' : 'Save!';
+        const {categories, id} = this.props;
         return (
             <Grid fluid>
                 <Row>
-                    <Col xs={12} md={8} mdOffset={2}>
-                        <form name='post' onSubmit={handleSubmit(this.onSubmit)}>
-                            {isEdit && 
-                                <Field name='id' component='input' id='id' hidden={true} />
-                            }
-                            <Field name='author' component={InputText} id='author' hintText='Post author' label='Author' disabled={isEdit} />
-                            <Field name='title' component={InputText} id='title' hintText='Post title' label='Title' />
-                            <Field name='category' component={InputSelect} id='category' label='Category' disabled={isEdit}>
-                                {this.state.categories && this.state.categories.map(cat => (
-                                    <MenuItem key={cat.path} value={cat.path} primaryText={cat.name} />
-                                ))}
-                            </Field>
-                            <Field name='body' component={InputText} id='body' hintText='Post Body' label='Body' multiLine={true} rows={5} />
-                            <br /><br />
-                            <RaisedButton label={invalid ? "Complete the form" : btnLabel} secondary={false} backgroundColor='green' labelColor='#fff' type='submit' disabled={invalid || submitting} />
-                            {isEdit && 
-                                <RaisedButton label='Back to detail' secondary={true} style={{float : 'right'}} onClick={() => history.push(`/post/${id}`)}/>
-                            }
-                            
-                        </form>
-
-                        <Snackbar open={this.state.snackBarOpen} autoHideDuration={this.state.autoHideDuration} message={this.state.snackMessage} bodyStyle={this.state.hasApiError ? {backgroundColor : '#b30000'} : {backgroundColor : '#009933'}}/>
+                    <Col xs={12} md={8} mdOffset={2}>     
+                        {id && <PostForm form="editPost" categories={categories} onSubmit={this.onEditPost} id={id}/>}
+                        {!id && <PostForm form="addPost" categories={categories} onSubmit={this.onCreatePost} />}
+                        <Snackbar 
+                            open={this.state.snackBarOpen} 
+                            autoHideDuration={this.state.autoHideDuration} 
+                            message={this.state.snackMessage} 
+                            bodyStyle={this.state.hasApiError ? {backgroundColor : '#b30000'} : {backgroundColor : '#009933'}}/>
                     </Col>
                 </Row>
             </Grid>
@@ -137,23 +106,23 @@ class PostFormContainer extends Component {
 const mapDispatchToProps = (dispatch) => {
     return {
         resetForm : () => dispatch(resetPostForm()),
-        addEditPost : (data) => dispatch(addEditPost(data))
+        addEditPost : (data) => dispatch(addEditPost(data)),
+        addCategory : (category) => dispatch(addCategory(category)),
+        removeEditPost : () => dispatch(removeEditPost())
     }
 }
 
 const mapStateToProps = ({categories, posts, form}) => {
-    console.log(posts.edit)
+    const arrayCategories = Object.keys(categories)
+                        .reduce((reducer, key) => {
+                           reducer.push(categories[key]);
+                           return reducer; 
+                        }, [])
+    
     return {
-        initialValues : posts.edit,
-        categories
+        categories : arrayCategories
     }
 }
-
-PostFormContainer = withRouter(PostFormContainer);
-
-PostFormContainer = reduxForm({
-    validate
-})(PostFormContainer);
 
 PostFormContainer = connect(
     mapStateToProps,

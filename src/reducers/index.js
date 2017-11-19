@@ -16,7 +16,8 @@ import {
     COMMENT_FORM_RESET,
     REMOVE_COMMENT,
     ADD_EDIT_COMMENT,
-    REMOVE_EDIT_COMMENT
+    REMOVE_EDIT_COMMENT,
+    REMOVE_EDIT_POST
 } from '../actions';
 import {SORT_BY_VOTE_SCORE} from '../helpers/SortHelper'
 
@@ -102,9 +103,15 @@ const posts = (state = initPostsState, action) => {
                     category
                 }
             }
-        case REMOVE_POST : 
-            delete state.list[id];
+        case REMOVE_POST :
+            const newState = Object.assign({}, state); 
+            delete newState.list[id];
             return state;
+        case REMOVE_EDIT_POST : 
+            return {
+                ...state,
+                edit : {}
+            }
         default:
             return state;
     }
