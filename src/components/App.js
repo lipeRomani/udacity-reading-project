@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import {Route} from 'react-router-dom';
+import {Route, Switch} from 'react-router-dom';
 import PostListContainer from './PostListContainer';
 import HeaderMenu from './HeaderMenu';
 import PostFormContainer from './PostFormContainer';
 import PostDetailContainer from './PostDetailContainer'
+import NotFound404 from './NotFound404';
 
 class App extends Component {
   
@@ -11,18 +12,20 @@ class App extends Component {
     return (
       <div>
         <HeaderMenu />
-        <Route path="/" exact component={PostListContainer} />
-        
-        <Route path="/new/post" render={(props => {
-          return <PostFormContainer {...props} />
-        })} />
-        
-        <Route path="/post/edit/:id" exact render={(props) => {
-          const {id} = props.match.params;
-          return <PostFormContainer {...props} id={id} />
-        }} />
+        <Switch>
+          <Route path="/" exact component={PostListContainer} />
+          <Route path="/new/post" render={(props => {
+            return <PostFormContainer {...props} />
+          })} />
+          <Route path="/post/edit/:id" render={(props) => {
+            const {id} = props.match.params;
+            return <PostFormContainer {...props} id={id} />
+          }} />
+          <Route path="/:category/:id" exact component={PostDetailContainer} />
+          <Route path="/:category" exatc component={PostListContainer} />
+          <Route render={() => <NotFound404 message="Page not found!" />} />
+        </Switch>
 
-        <Route path="/post/:id" exact component={PostDetailContainer} />
       </div>
     );
   }

@@ -13,18 +13,23 @@ import {
     addFilterByCategory,
     clearFilterByCategory,
     changeSortBy,
-    clearAlert
+    clearAlert,
+    addAlert,
+    removePost
 } from '../actions';
 import {
     getAllPosts,
     getAllCategories,
     voteById,
     OPTION_UP_VOTE,
-    OPTION_DOWN_VOTE
+    OPTION_DOWN_VOTE,
+    deletePost
 } from '../services/ApiService';
 import isEmpty from 'is-empty';
 import AlertContainer from 'react-alert';
 import PropTypes from 'prop-types';
+import {withRouter} from 'react-router-dom';
+
 
 class PostListContainer extends Component {
 
@@ -36,7 +41,15 @@ class PostListContainer extends Component {
     componentDidMount() {
         this._loadPosts();
         this._loadCategories();
-        this._showAlertIfExists();
+        // this._showAlertIfExists();
+        this._filterCategoryIfParam();
+    }
+
+    _filterCategoryIfParam() {
+        const {category} = this.props.match.params;
+        if (category) {
+            this.props.addFilterByCategory(category);
+        }
     }
 
     onUpVote = (postId) => {
@@ -54,11 +67,15 @@ class PostListContainer extends Component {
     }
 
     onFilterByCategory = (category) => {
+        const {history} = this.props;
         this.props.addFilterByCategory(category);
+        history.push(`/${category}`);
     }
 
     onClearFilterByCategory = () => {
+        const {history} = this.props;
         this.props.clearFilterByCategory();
+        history.push(`/`);
     }
 
     onChangeSort = (event, index, value) => {
@@ -75,6 +92,7 @@ class PostListContainer extends Component {
             .then(posts => {
                 posts.forEach(post => this.props.addPost(post));
                 this.setState({loadPosts : false})
+                this._showAlertIfExists();
             });
     }
 
@@ -104,9 +122,24 @@ class PostListContainer extends Component {
         }
     }
 
+    onDeletePost = (postId) => {
+        const {addAlert, removePost} = this.props;
+        deletePost(postId)
+            .then(post => {
+                addAlert({
+                    typeMessage : 'success',
+                    message : `Post ${post.title} deleted`,
+                    time : 5000
+                });
+                removePost(postId);
+                this._loadPosts();
+            })
+    }
+
     render() {
         const {posts, categories, filter, alert} = this.props;
         const sortMode = getSortString(filter.sortBy);
+
         return (
            <Grid fluid style={{marginTop : '10px'}}>
                 <Row>
@@ -129,7 +162,7 @@ class PostListContainer extends Component {
                             })
                             .sort(sortBy(sortMode))
                             .map((post => {
-                                return <PostItem key={post.id} post={post} onUpVote={this.onUpVote} onDownVote={this.onDownVote} />
+                                return <PostItem onDelete={this.onDeletePost} key={post.id} post={post} onUpVote={this.onUpVote} onDownVote={this.onDownVote} />
                             }))}
                     </Col>
 
@@ -167,9 +200,13 @@ const mapDispatchToProps = (dispatch) => {
         addFilterByCategory : (data) => dispatch(addFilterByCategory(data)),
         clearFilterByCategory : () => dispatch(clearFilterByCategory()),
         changeSortBy : (data) => dispatch(changeSortBy(data)),
-        clearAlert : () => dispatch(clearAlert())
+        clearAlert : () => dispatch(clearAlert()),
+        addAlert : (alert) => dispatch(addAlert(alert)),
+        removePost : (id) => dispatch(removePost(id))
     };
 }
+
+PostListContainer = withRouter(PostListContainer);
 
 export default connect(
     mapStateToProps,
