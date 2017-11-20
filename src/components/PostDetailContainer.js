@@ -35,6 +35,7 @@ import Dialog from 'material-ui/Dialog';
 import CommentForm from './CommentForm';
 import {makeId} from '../helpers/IdHelper';
 import sortBy from 'sort-by';
+import PropTypes from 'prop-types';
 
 class PostDetailContainer extends Component {
 
@@ -257,6 +258,11 @@ class PostDetailContainer extends Component {
             </Grid>    
         )
     }
+}
+
+PostDetailContainer.propTypes = {
+    post : PropTypes.object.isRequired,
+    comments : PropTypes.array
 }
 
 const mapStateToProps = ({posts, comments}) => {

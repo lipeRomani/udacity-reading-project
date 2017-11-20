@@ -24,6 +24,7 @@ import {
 } from '../services/ApiService';
 import isEmpty from 'is-empty';
 import AlertContainer from 'react-alert';
+import PropTypes from 'prop-types';
 
 class PostListContainer extends Component {
 
@@ -140,6 +141,13 @@ class PostListContainer extends Component {
            </Grid>
         )
     }
+}
+
+PostListContainer.propTypes = {
+    posts : PropTypes.object,
+    categories: PropTypes.object,
+    filter : PropTypes.object,
+    alert : PropTypes.object
 }
 
 const mapStateToProps = ({posts, categories, filter, alert}) => {

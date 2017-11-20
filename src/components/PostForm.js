@@ -6,6 +6,7 @@ import {withRouter} from 'react-router-dom';
 import MenuItem from 'material-ui/MenuItem';
 import RaisedButton from 'material-ui/RaisedButton';
 import isEmpty from 'is-empty';
+import PropTypes from 'prop-types';
 
 const validate = values => {
     const errors = {};
@@ -39,6 +40,15 @@ let PostForm = ({categories, handleSubmit, invalid, submitting, history, onSubmi
             }
         </form>
     )
+}
+
+PostForm.propTypes = {
+    categories : PropTypes.arrayOf(PropTypes.shape({
+        name : PropTypes.string,
+        path : PropTypes.string
+    })).isRequired,
+    onSubmit : PropTypes.func.isRequired,
+    id : PropTypes.string
 }
 
 const mapStateToProps = ({categories, posts}) => {

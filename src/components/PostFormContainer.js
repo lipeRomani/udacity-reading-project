@@ -10,6 +10,7 @@ import Snackbar from 'material-ui/Snackbar';
 import {resetPostForm, addEditPost, addCategory, removeEditPost} from '../actions';
 import {connect} from 'react-redux';
 import PostForm from './PostForm';
+import PropTypes from 'prop-types';
 
 class PostFormContainer extends Component {
 
@@ -101,6 +102,14 @@ class PostFormContainer extends Component {
             </Grid>
         )
     }
+}
+
+PostFormContainer.propTypes = {
+    categories : PropTypes.arrayOf(PropTypes.shape({
+        name : PropTypes.string,
+        path : PropTypes.string
+    })).isRequired,
+    id : PropTypes.string
 }
 
 const mapDispatchToProps = (dispatch) => {

@@ -34,6 +34,10 @@ const FilterTags = (props) => {
 }
 
 FilterTags.propTypes = {
+    categories : PropTypes.shape({
+        name : PropTypes.string,
+        path : PropTypes.string
+    }).isRequired,
     selected : PropTypes.string,
     onFilter : PropTypes.func,
     onClearFilter : PropTypes.func
