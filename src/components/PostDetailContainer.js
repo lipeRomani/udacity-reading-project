@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {
+    fetchDetailedPost,
     addDetailedPost,
     addAlert,
     removePost,
@@ -53,11 +54,12 @@ class PostDetailContainer extends Component {
     }
 
     _loadPost = (postId) => {
-        getOnePostById(postId)
-            .then(post => {
-                this.props.addDetailedPost(post);
-                this.setState({loadPost : false})
-            })
+        // getOnePostById(postId)
+        //     .then(post => {
+        //         this.props.addDetailedPost(post);
+        //         this.setState({loadPost : false})
+        //     })
+        this.props.fetchDetailedPost(postId);
     }
 
     _loadComments = (postId) => {
@@ -285,6 +287,7 @@ const mapStateToProps = ({posts, comments}) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         addDetailedPost : (data) => dispatch(addDetailedPost(data)),
+        fetchDetailedPost : (postId) => dispatch(fetchDetailedPost(postId)),
         addAlert : (data) => dispatch(addAlert(data)),
         removePost : (data) => dispatch(removePost(data)),
         addComment : (comment, postId) => dispatch(addComment(comment, postId)),

@@ -1,3 +1,5 @@
+import {getOnePostById} from '../services/ApiService'; 
+
 
 export const RESET_POST_FORM =  'RESET_POST_FORM';
 export const ADD_POST = 'ADD_POST';
@@ -84,6 +86,11 @@ export const addDetailedPost = (post) => {
         type : ADD_DETAILED_POST,
         post
     }
+}
+
+export const fetchDetailedPost = (postId) => dispatch => {
+    getOnePostById(postId)
+        .then(post => dispatch(addDetailedPost(post)));
 }
 
 export const addComment = (comment, postId) => {
